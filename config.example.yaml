@@ -1,0 +1,35 @@
+# Chekup configuration (user-driven, read-only)
+# Place at ~/.config/chekup/config.yaml
+
+refresh_interval: 2.0
+docker_enabled: true
+docker_auto_discover: true   # Auto-list all running containers (recommended)
+docker_containers: []        # Leave empty to auto-discover, or list specific names
+
+# Router/API health check (optional)
+router_url: "http://127.0.0.1:8001/health"
+
+# Nginx listener fallback (checks :80/:443 sockets)
+check_nginx: false
+
+# HTTP healthchecks (list of endpoints)
+healthchecks:
+  - url: http://127.0.0.1:8001/health
+    timeout: 2
+    expect_status: 200
+
+# System services to monitor
+services_enabled: true
+services_auto_discover: true
+services_custom: []
+
+# Thresholds
+cpu_warn: 70.0
+cpu_critical: 85.0
+mem_warn: 70.0
+mem_critical: 90.0
+disk_warn: 70.0
+disk_critical: 90.0
+
+diagnostics_enabled: true
+read_only: true  # Always true — Chekup never mutates anything
