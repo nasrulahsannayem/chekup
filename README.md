@@ -50,6 +50,21 @@ chekup
 ```
 *Press `Ctrl+C` to exit.*
 
+**TUI Preview:**
+```
+╭──────────────────────────────────────────────────────────────────────╮
+│ Chekup — Read-only system monitor v1.0.0                             │
+├──────────────────────────────────────────────────────────────────────┤
+│ CPU: ████████░░  67%    RAM: █████████░  43%    Disk: ████░░░░░░  22%│
+│ Network: ↑1.2 MB/s  ↓3.4 MB/s                                        │
+├──────────────────────────────────────────────────────────────────────┤
+│ PID   PROCESS          CPU    RAM    STATE                          │
+│ 1     s6-svscan        0.0%   0.0%   sleeping                       │
+│ 203   hermes           2.5%   1.8%   running                        │
+│ ...                                                                │
+╰──────────────────────────────────────────────────────────────────────╯
+```
+
 ### One-Shot Report
 Get an immediate terminal table of system stats and top processes:
 ```bash
