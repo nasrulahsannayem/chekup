@@ -20,6 +20,19 @@ def run(args: List[str], timeout: int = 3) -> str:
         return ""
 
 
+def list_running_containers() -> List[str]:
+    """Auto-discover all running container names via `docker ps`."""
+    try:
+        p = subprocess.run(
+            ["docker", "ps", "--format", "{{.Names}}"],
+            capture_output=True, text=True, timeout=5, errors="replace"
+        )
+        names = [n.strip() for n in p.stdout.strip().splitlines() if n.strip()]
+        return names
+    except Exception:
+        return []
+
+
 def get_container_status(name: str) -> Dict[str, Any]:
     """Return status and restart count for one container name."""
     out = run(["docker", "inspect", "-f",
@@ -31,5 +44,10 @@ def get_container_status(name: str) -> Dict[str, Any]:
 
 
 def get_container_statuses(names: List[str]) -> List[Dict[str, Any]]:
-    """Return status dicts for the configured container names."""
+    """Return status dicts for the configured container names.
+
+    Fully config-driven: whatever container names the user lists in
+    config (``docker_containers``) get real ``docker inspect`` data.
+    No container name is ever hard-coded.
+    """
     return [get_container_status(n) for n in names]

@@ -20,6 +20,9 @@ class Config:
     services_custom: List[str] = field(default_factory=list)
     docker_enabled: bool = False
     docker_containers: List[str] = field(default_factory=list)
+    docker_auto_discover: bool = True  # Auto-list all running containers
+    router_url: str = ""  # e.g. http://127.0.0.1:8001/health
+    check_nginx: bool = False  # Fallback: check :80/:443 listeners
     healthchecks: List[Dict[str, Any]] = field(default_factory=list)
     diagnostics_enabled: bool = True
     cpu_warn: float = 70.0

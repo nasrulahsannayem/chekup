@@ -21,8 +21,11 @@ from ..core.disk import DiskInfo, collect_disk
 from ..core.system import SystemInfo
 from ..core.processes import ProcessInfo, collect_processes
 from ..monitoring.services import get_all_services
-from ..monitoring.containers import get_container_statuses
-from ..monitoring.healthchecks import get_healthchecks_status
+from ..monitoring.containers import get_container_statuses, list_running_containers
+from ..monitoring.healthchecks import (
+    get_healthchecks_status,
+    check_nginx_listener,
+)
 from ..diagnostics.engine import evaluate, Finding
 
 
@@ -108,15 +111,31 @@ class Chekup(App):
                     self.config.services_auto_discover,
                 )
 
-            # Containers
+            # Containers (auto-discover if enabled)
             containers = []
-            if self.config.docker_enabled and self.config.docker_containers:
-                containers = get_container_statuses(self.config.docker_containers)
+            if self.config.docker_enabled:
+                container_names = self.config.docker_containers
+                if self.config.docker_auto_discover and not container_names:
+                    container_names = list_running_containers()
+                if container_names:
+                    containers = get_container_statuses(container_names)
 
-            # Healthchecks
+            # Healthchecks + router + nginx fallback
             healthchecks = []
             if self.config.healthchecks:
                 healthchecks = get_healthchecks_status(self.config.healthchecks)
+            if self.config.router_url:
+                from ..monitoring.healthchecks import check_url
+                router_result = check_url(self.config.router_url, timeout=2.0)
+                if not any(h.get("url") == self.config.router_url for h in healthchecks):
+                    healthchecks.append(router_result)
+            if self.config.check_nginx:
+                nginx_ok = check_nginx_listener()
+                if not nginx_ok:
+                    healthchecks.append({
+                        "url": "nginx(:80/:443)", "ok": False,
+                        "status": None, "error": "NOT LISTENING"
+                    })
 
             # Diagnostics
             zombies = [p for p in procs if p.state == "zombie"]
