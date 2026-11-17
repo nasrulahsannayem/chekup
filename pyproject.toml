@@ -1,0 +1,49 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "chekup"
+version = "1.0.0"
+description = "Chekup — a strict read-only system health & monitoring TUI for Linux servers."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [
+    { name = "The Chekup Project" },
+]
+keywords = ["monitoring", "tui", "system", "health", "linux", "textual", "read-only"]
+classifiers = [
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Environment :: Console :: Curses",
+    "Operating System :: POSIX :: Linux",
+    "Topic :: System :: Monitoring",
+    "Topic :: System :: Systems Administration",
+]
+dependencies = [
+    "psutil>=5.9",
+    "rich>=13.0",
+    "textual>=0.45",
+    "PyYAML>=6.0",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=7.0"]
+
+[project.urls]
+Homepage = "https://github.com/nasrulahsannayem/chekup"
+Documentation = "https://github.com/nasrulahsannayem/chekup#readme"
+Repository = "https://github.com/nasrulahsannayem/chekup"
+
+[project.scripts]
+chekup = "chekup.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
